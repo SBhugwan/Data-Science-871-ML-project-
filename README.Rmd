@@ -1,0 +1,13 @@
+---
+title: "Data Science 871 ML project"
+output: html_document
+date: "2023-05-26"
+---
+
+
+# The purpose of this project is to try and predict who should have won the 2022 FIFA world cup based on historical data 
+
+```{r}
+
+```
+
