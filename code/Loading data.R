@@ -20,8 +20,6 @@ allmatches <- allmatches %>% mutate(Year = as.numeric(format(date, "%Y")))
 # Filter the data up until October 31, 2022 excluding the world cup matches
 filtered_matches <- allmatches %>% filter(date <= as.Date("2022-10-31"))
 
-
-
 #Historical Win/Loose/Draw ratios for teams playing in the world cup
 HWLD<- read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/historical_win-loose-draw_ratios_qatar2022_teams.csv")
 
@@ -61,10 +59,10 @@ df_wc_ranked <- sqldf("SELECT df.*, r.total_points AS total_points_away, r.previ
                       FROM df_wc_ranked AS df
                       LEFT JOIN rank AS r ON df.date = r.rank_date AND df.away_team = r.country_full")
 
-
+#Example using Brazil
 tail(df_wc_ranked[df_wc_ranked$home_team == "Brazil" | df_wc_ranked$away_team == "Brazil", ], 10)
 
-#World cup 2022 matches
+# Import 2022 World cup matches
 fifa2022WC <-read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/matchs-schudule.csv")
 
 
