@@ -73,6 +73,3 @@ fifa2022WC <-read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 8
 
 
 
-
-
-
