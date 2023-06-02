@@ -6,6 +6,7 @@ library("modelr")
 suppressMessages(library("broom"))
 library("ggrepel")
 library("sqldf")
+library(RColorBrewer)
 set.seed(42)
 
 
