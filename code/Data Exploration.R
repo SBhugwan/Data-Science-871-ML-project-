@@ -92,7 +92,7 @@ ggplot(top5competitions, aes(x = n, y = Importance, colour = tournament, size = 
     labs(x = "\nNumber of Games 1872-2022", y = "", colour = "")
 
 
-# Filter the matches to include only FIFA World Cup finals (Need To correct winners)
+# Filter the matches to include only FIFA World Cup finals (maunually adjusted some of the winners)
 fifa_finals <- filtered_matches %>%
     filter(str_detect(tournament, "FIFA World Cup") & !str_detect(tournament, "qualification")) %>%
     mutate(doy = as.numeric(format(date, "%j"))) %>%
@@ -101,10 +101,16 @@ fifa_finals <- filtered_matches %>%
     filter(doy == max(doy)) %>%
     mutate(
         Winner = ifelse(home_score > away_score, home_team, away_team),
-        Looser = ifelse(home_score < away_score, home_team, away_team)
+        Loser = ifelse(home_score < away_score, home_team, away_team)
     ) %>%
+    group_by(Year) %>%
+    filter(row_number() == 1) %>%
     ungroup() %>%
     select(Year, Winner)
+
+fifa_finals$Winner[4] <- "Italy"
+fifa_finals$Winner[7] <- "Brazil"
+fifa_finals$Winner[19] <- "Italy"
 
 world_cup_winners <- fifa_finals %>%
     count(Winner, name = "Wins") %>%

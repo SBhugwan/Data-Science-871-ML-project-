@@ -4,10 +4,10 @@ output: html_document
 date: "2023-05-26"
 ---
 
-
-# The purpose of this project is to try and predict who should have won the 2022 FIFA world cup based on historical data 
+# The purpose of this project is to try and predict who should have won the 2022 FIFA world cup based on historical data
 
 ```{r}
 
+in title {r include=false}
+source("code/ what ever script is called.R")
 ```
-
