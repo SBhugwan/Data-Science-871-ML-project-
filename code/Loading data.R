@@ -7,6 +7,10 @@ suppressMessages(library("broom"))
 library("ggrepel")
 library("sqldf")
 library(RColorBrewer)
+library(fastDummies)
+library(randomForest)
+library(caret)
+library(gbm)
 set.seed(42)
 
 
