@@ -27,3 +27,11 @@ create_db <- function(df) {
 
 model_db <- create_db(df)
 print(model_db)
+
+
+# Try using a Random Forest and maybe Gradient Booster
+
+X <- model_db[, 4:ncol(model_db)]
+y <- model_db[, "target"] #62- 63
+
+
