@@ -30,7 +30,7 @@ filtered_matches <- allmatches %>% filter(date <= as.Date("2022-10-31"))
 HWLD<- read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/historical_win-loose-draw_ratios_qatar2022_teams.csv")
 
 #Qatar 2022 teams in allocated groups
-Q2022TG<- read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/Qatar2022-teams.csv")
+#Q2022TG<- read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/Qatar2022-teams.csv")
 
 #FIFA world cup rankings
 rank<-read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/fifa_ranking-2022-12-22.csv")
@@ -69,12 +69,21 @@ df_wc_ranked <- sqldf("SELECT df.*, r.total_points AS total_points_away, r.previ
 tail(df_wc_ranked[df_wc_ranked$home_team == "Brazil" | df_wc_ranked$away_team == "Brazil", ], 10)
 
 # Import 2022 World cup matches
-fifa2022WC <-read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/matchs-schudule.csv")
+#fifa2022WC <-read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/matchs-schudule.csv")
 
 
 
 
 
+#Updated
+#rank_df<-read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/fifa_ranking-2022-12-22.csv")
+#fifa2022WC <-read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/matchs-schudule.csv")
+#Q2022TG<- read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/Qatar2022-teams.csv")
+#matches_df<-read_csv("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/data/Matches .csv")
 
-
-
+match_df$home_team <- ifelse(match_df$home_team == "IR Iran", "Iran", match_df$home_team)
+match_df$home_team <- ifelse(match_df$home_team == "Korea Republic", "South Korea", match_df$home_team)
+match_df$away_team <- ifelse(match_df$away_team == "IR Iran", "Iran", match_df$away_team)
+match_df$away_team <- ifelse(match_df$away_team == "Korea Republic", "South Korea", match_df$away_team)
+rank_df$country_full <- ifelse(rank_df$country_full == "IR Iran", "Iran", rank_df$country_full)
+rank_df$country_full <- ifelse(rank_df$country_full == "Korea Republic", "South Korea", rank_df$country_full)

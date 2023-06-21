@@ -20,9 +20,9 @@ top_7_tournaments <- filtered_matches %>%
 
 custom_colors <- c("red", "blue", "green", "yellow", "pink", "purple", "orange")
 
-ggplot(
+Annualmatches<- ggplot(
     top_7_tournaments %>% count(Year) %>% filter(!is.na(Year) & !is.na(n) & Year >= 1872 & Year <= 2022),
-    aes(x = Year, y = n, fill = reorder(tournament, n, sum))
+    aes(x = Year, y = n , fill = reorder(tournament, n, sum))
 ) +
     geom_area(show.legend = T, color = "White", size = 0.5) +
     scale_fill_manual(values = custom_colors) +  # Use custom colors
@@ -51,7 +51,7 @@ top_7_tournaments <- filtered_matches %>%
 num_colors <- length(unique(top_7_tournaments$tournament))
 custom_palette <- brewer.pal(num_colors, "Set1")
 
-ggplot(
+MajorM<-ggplot(
     top_7_tournaments %>% filter(!is.na(tournament)) %>% count(tournament),
     aes(x = reorder(tournament, n, sum), y = n, fill = as.factor(n))
 ) +
@@ -82,7 +82,7 @@ top5competitions <- suppressMessages(
 )
 
 options(repr.plot.width = 8, repr.plot.height = 4)
-ggplot(top5competitions, aes(x = n, y = Importance, colour = tournament, size = n)) +
+IBT<-ggplot(top5competitions, aes(x = n, y = Importance, colour = tournament, size = n)) +
     geom_point() +
     ggtitle("Importance by Tournament") +
     theme_minimal() +
@@ -118,9 +118,16 @@ world_cup_winners <- fifa_finals %>%
 
 options(repr.plot.width = 10, repr.plot.height = 6)  # Adjust the plot size if needed
 
-ggplot(world_cup_winners, aes(x = reorder(Winner, Wins), y = Wins)) +
+WCW <- ggplot(world_cup_winners, aes(x = reorder(Winner, Wins), y = Wins)) +
     geom_bar(stat = "identity", fill = "skyblue", width = 0.7) +
     labs(x = "Country", y = "Number of World Cup Wins") +
     ggtitle("FIFA World Cup Winners") +
     theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          plot.title = element_text(color = "blue", size = 20, face = "bold"),
+          axis.text = element_text(color = "darkblue"),
+          axis.title = element_text(color = "darkblue", size = 14),
+          panel.background = element_rect(fill = "lightgray"))
+
+
+
