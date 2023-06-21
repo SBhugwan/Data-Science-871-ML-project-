@@ -67,6 +67,7 @@ acc_log <- round(mean(lg_pred == y_test) * 100, 2)
 acc_log
 
 
+
 # Support Vector Machines
 y_train <- as.factor(y_train)  # Convert y_train to a factor
 
@@ -100,6 +101,54 @@ rf_model <- randomForest(y_train ~ ., data = cbind(X_train, y_train), ntree = 10
 rf_pred <- predict(rf_model, newdata = X_test)
 acc_random_forest <- round(mean(rf_pred == y_test) * 100, 2)
 acc_random_forest
+
+##Create a data frame with model names and scores
+models <- data.frame(
+    Model = c("Support Vector Machines", "KNN", "Logistic Regression",
+              "Random Forest", "Naive Bayes", "Decision Tree"),
+    Score = c(acc_svc, acc_knn, acc_log,
+              acc_random_forest, acc_gaussian, acc_decision_tree)
+)
+
+# Sort the data frame by score in descending order
+models <- models[order(-models$Score), ]
+
+#models
+
+model <- logreg
+
+plot_model_accuracy <- function(models) {
+    # Sort the data frame by score in descending order
+    models <- models[order(-models$Score), ]
+
+    # Set a custom color palette for the bar chart
+    bar_colors <- c("#5E81AC", "#8FBCBB", "#A3BE8C", "#EBCB8B", "#BF616A", "#B48EAD")
+
+    # Calculate the maximum score
+    max_score <- max(models$Score)
+
+    # Create a bar chart to compare the accuracy scores
+    barplot(models$Score, names.arg = models$Model,
+            ylab = "Accuracy Score",
+            main = "Comparison of Model Accuracy",
+            col = bar_colors, border = "black", ylim = c(0, max_score * 1.1),
+            cex.names = 0.8, las = 2)
+
+    # Add text labels above each bar
+    text(x = 1:length(models$Model), y = models$Score, labels = paste0(models$Score, "%"),
+         pos = 3, cex = 0.8, col = "black")
+
+    # Add a horizontal line for the average accuracy
+    avg_score <- mean(models$Score)
+    abline(h = avg_score, col = "red", lwd = 2)
+    text(x = length(models$Model) + 0.8, y = avg_score, labels = paste0("Avg: ", round(avg_score, 2), "%"),
+         pos = 2, cex = 0.8, col = "red")
+
+
+}
+
+#plot_model_accuracy(models)
+
 
 
 
@@ -163,55 +212,52 @@ BVTO<-ggplot(df, aes(x = Complexity, y = Accuracy)) +
     theme_minimal()
 
 
-##Create a data frame with model names and scores
-models <- data.frame(
-    Model = c("Support Vector Machines", "KNN", "Logistic Regression",
-              "Random Forest", "Naive Bayes", "Decision Tree"),
-    Score = c(acc_svc, acc_knn, acc_log,
-              acc_random_forest, acc_gaussian, acc_decision_tree)
-)
-
-# Sort the data frame by score in descending order
-models <- models[order(-models$Score), ]
-
-models
-
-model <- logreg
-
-plot_model_accuracy <- function(models) {
-    # Sort the data frame by score in descending order
-    models <- models[order(-models$Score), ]
-
-    # Set a custom color palette for the bar chart
-    bar_colors <- c("#5E81AC", "#8FBCBB", "#A3BE8C", "#EBCB8B", "#BF616A", "#B48EAD")
-
-    # Calculate the maximum score
-    max_score <- max(models$Score)
-
-    # Create a bar chart to compare the accuracy scores
-    barplot(models$Score, names.arg = models$Model,
-            ylab = "Accuracy Score",
-            main = "Comparison of Model Accuracy",
-            col = bar_colors, border = "black", ylim = c(0, max_score * 1.1),
-            cex.names = 0.8, las = 2)
-
-    # Add text labels above each bar
-    text(x = 1:length(models$Model), y = models$Score, labels = paste0(models$Score, "%"),
-         pos = 3, cex = 0.8, col = "black")
-
-    # Add a horizontal line for the average accuracy
-    avg_score <- mean(models$Score)
-    abline(h = avg_score, col = "red", lwd = 2)
-    text(x = length(models$Model) + 0.8, y = avg_score, labels = paste0("Avg: ", round(avg_score, 2), "%"),
-         pos = 2, cex = 0.8, col = "red")
-
-
-}
-
-#plot_model_accuracy(models)
 
 
 
+## cross-validation for logistic regression
+
+library(caret)
+
+# Create a train control object for cross-validation
+ctrl <- trainControl(method = "cv", number = 10)  # 10-fold cross-validation
+
+# Train the logistic regression model using cross-validation
+logreg_model_cv <- train(y_train ~ ., data = cbind(X_train, y_train),
+                         method = "glm", family = binomial(), trControl = ctrl)
+
+# Print the results of cross-validation
+print(logreg_model_cv)
+
+# Access the accuracy and other performance metrics
+accuracy_cv <- logreg_model_cv$results$Accuracy
+other_metrics_cv <- logreg_model_cv$results  # Other metrics can be accessed similarly
+
+# Assess the bias and variance
+bias <- mean(accuracy_cv) - acc_log
+variance <- var(accuracy_cv)
+
+# Print the bias and variance
+cat("Bias:", bias, "\n")
+cat("Variance:", variance, "\n")
+
+
+library(pROC)
+
+# Logistic Regression ROC curve
+logreg <- glm(y_train ~ ., family = binomial(), data = cbind(X_train, y_train))
+lg_pred <- predict(logreg, newdata = X_test, type = "response")
+
+# Convert y_test to a binary factor
+y_test <- factor(y_test, levels = c(0, 1), labels = c("control", "case"))
+
+# Calculate the ROC curve
+roc_obj <- roc(y_test, lg_pred)
+
+# Plot the ROC curve
+plot(roc_obj, main = "ROC Curve", xlab = "False Positive Rate", ylab = "True Positive Rate")
+
+print(roc_obj) #check notes for meaning
 
 
 
