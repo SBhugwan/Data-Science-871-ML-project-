@@ -212,7 +212,17 @@ I then did a cross validation with regards to the logistic regression. I however
 
 The ROC curve show the trade-off between the true positive rate and the false positive rate at different thresholds. For some reason I wasn't able to print the the curve. I was able to calculate the area under the curve in my code it is print(roc_obj) which is 0.7541. What this mean is that my model has some level of discriminatory power. It performs better than a random classifier however it may have room for improvement to achieve a higher accuracy rate.
 
-# Bias variance trade off 
+# Bias Variance trade off 
+
+An two important concept for machine learning are bias and variance. Bias is used to describe the error that occurs when a simplified model is used to approximate a real-world problem. It expresses how well the model's forecasts match the actual values. A model with a high bias makes significant assumptions about the data by oversimplifying it and possibly underfitting the training set. This means that the model is unable to capture underlying patterns and consistently under- or overestimates true values. Low accuracy and poor generalisation to previously unseen data can result from high bias.
+
+Variance refers to the variability or the sensitivity of the models prediction with regards to the fluctuations in the training data. Therefore it measures how well the models predictions will change with regards to the trained data on different subsets. If the model has a high variance it indicates that the model is very sensitive with regards to random fluctuations in the training data which may result in overfitting. This will generally occurs when the model fails to generalize the new unseen data.
+
+```{r}
+BVTO
+```
+
+The figure shows the bias variance trade off what one can see is that of the number of fold increase there is fluctuations with regards to the accuracy of the model. However it should be noted that the variance tends to fluctuate between 0.67 and 0.6725 which shows that even though there is fluctutaions it tends to be small therefore we can see that that of average the accuracy of the the model is about 0.67125
 
 # Prediction 
 
