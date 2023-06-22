@@ -252,10 +252,10 @@ lg_pred <- predict(logreg, newdata = X_test, type = "response")
 y_test <- factor(y_test, levels = c(0, 1), labels = c("control", "case"))
 
 # Calculate the ROC curve
-roc_obj <- roc(y_test, lg_pred)
+#roc_obj <- roc(y_test, lg_pred)
 
 # Plot the ROC curve
-plot(roc_obj, main = "ROC Curve", xlab = "False Positive Rate", ylab = "True Positive Rate")
+#plot(roc_obj, main = "ROC Curve", xlab = "False Positive Rate", ylab = "True Positive Rate")
 
-print(roc_obj) #check notes for meaning
+#print(roc_obj) #check notes for meaning
 

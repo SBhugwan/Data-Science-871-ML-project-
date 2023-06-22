@@ -108,7 +108,7 @@ source("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/c
 #Data exploration 
 source("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/code/Data Exploration.R")
 
-source("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/code/feature engineering and prediction .R")
+source("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/code/feature engineering and prediction.R")
 
 
 ```
@@ -199,3 +199,9 @@ plot_model_accuracy(models)
 ```
 
 The results from my different tests clearly show that the logistic regression performs the best out of all the different models. Given this and the fact that accuracy is a common metric used which measures the proportion of correct predictions from the total number of predictions. In all the different models the logistic regression is able to correctly predict the outcome of the match 68.02% of the time on my test set.
+
+### Cross Validation 
+
+A cross validation technique is a re-sampling technique that is used in machine learning that is used to assess the performance of the models. the main idea of behind this to once again split the the data into multiple sets these are refereed to as folds. The model is once again training on some of the data (for example say K folds) and then evaluates on the remaining sets (K-1). This process is then repeated multiple times however it uses different sets of the data this allows for it to serve as the validation each time. The benefits of this is that it it is able to provide a more robust estimate of the model when compared to a single train split, thus allowing for a better understanding of how the model is able to generalize the unseen data. This method is also used with regards to tuning hyperparamters, as it is able to allow to find the optimal combinations of hyperparemters.
+
+I performed two different cross validations the first being of the random forest. I got a bias value of -66.76 what this results means is that the model is in fact performing worse without cross validation. which is unexpected given the fact that cross validation is generally expected to improve the models performance. Therefore what can be concluded from this is that the random forest model without cross validation actually performs better. The possibility
