@@ -108,6 +108,8 @@ source("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/c
 #Data exploration 
 source("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/code/Data Exploration.R")
 
+source("/Users/sahilbhugwan/Downloads/Data science/Data Science 871 ML project/code/feature engineering and prediction .R")
+
 
 ```
 
@@ -183,6 +185,17 @@ Given this i decided to simplify it even further I decided to predict the teams 
 
 # Training 
 
-In this section i will discuss what i did with regards to predicting the matches. The first thing that is done is to split the model into two different sections that being training and testing sets for machine learning. By splitting the data into different sets i can use the X_train and y_train sets to evaluate the performance on the unseen data using the X_test and y_test sets. Therefore by separating these sets will allow for the model to asses it ability with regards to being able to generate new, unseen data that and thereby avoid overfitting with regards to the training data.
+In this section i will discuss what i did with regards to predicting the matches, these features that i mentioned earlier (that being average rank, rank difference , point difference , stake of match and lastly if it was played at a world cup). These features i will be using for training the machine learning models. looking at the code (that is in the feature engineering and prediction) I first split the model into two different sections that being training and testing sets for machine learning. By splitting the data into different sets i can use the X_train and y_train sets to evaluate the performance on the unseen data using the X_test and y_test sets. Therefore by separating these sets will allow for the model to asses it ability with regards to being able to generate new, unseen data that and thereby avoid overfitting with regards to the training data. I did also create a function that ensure that it takes the target variable "y" which ensure that there is a 80%-20% split in favor of the training data. Another important note is that the variable y is the dependent variable in which the machine learning model aims to predict. I set the seed to 42 this to ensure reproducibility by doing this it ensure that i am able to be able to obtain the same train/ test split every time i run the code, this will ensure that my results are consistent and reproducible.
 
-Here i will be using the features that i mentioned earlier (that being average rank, rank difference , point difference , stake of match and lastly if it was played at a world cup). These features i will be using for training the machine learning models.
+## Models
+
+The next thing that i did was look at different models. The models that i looked at are the following logistic regression, support vector machines, K-nearest neighbors, Gaussian naive Bayes, decision trees and random forests. Therefore each of these models have there different strengths and weakness, by trying different models i am able to compare certain metrics such as the area under the ROC curve which will allow me to identify which models are best suit for the task at hand. Another reason for looking at different models is that each of them has different hyperparameters that has an impact on its performance.
+
+The results of each of the models can be illustrated below.
+
+```{r Figure6,  warning =  FALSE, fig.align = 'center', fig.cap = "Model Comparison     \\label{Figure6}", fig.ext = 'png', fig.height = 7, fig.width = 6}
+
+plot_model_accuracy(models)
+```
+
+The results from my different tests clearly show that the logistic regression performs the best out of all the different models. Given this and the fact that accuracy is a common metric used which measures the proportion of correct predictions from the total number of predictions. In all the different models the logistic regression is able to correctly predict the outcome of the match 68.02% of the time on my test set.
