@@ -204,4 +204,181 @@ The results from my different tests clearly show that the logistic regression pe
 
 A cross validation technique is a re-sampling technique that is used in machine learning that is used to assess the performance of the models. the main idea of behind this to once again split the the data into multiple sets these are refereed to as folds. The model is once again training on some of the data (for example say K folds) and then evaluates on the remaining sets (K-1). This process is then repeated multiple times however it uses different sets of the data this allows for it to serve as the validation each time. The benefits of this is that it it is able to provide a more robust estimate of the model when compared to a single train split, thus allowing for a better understanding of how the model is able to generalize the unseen data. This method is also used with regards to tuning hyperparamters, as it is able to allow to find the optimal combinations of hyperparemters.
 
-I performed two different cross validations the first being of the random forest. I got a bias value of -66.76 what this results means is that the model is in fact performing worse without cross validation. which is unexpected given the fact that cross validation is generally expected to improve the models performance. Therefore what can be concluded from this is that the random forest model without cross validation actually performs better. The possibility
+I performed two different cross validations the first being of the random forest. I got a bias value of -66.76 what this results means is that the model is in fact performing worse without cross validation. which is unexpected given the fact that cross validation is generally expected to improve the models performance. Therefore what can be concluded from this is that the random forest model without cross validation actually performs better. There are a few possibilities to consider why this may be the case such as data issues meaning that the data used in the cross validation might differ in some ways from the data used to train the random forest model. what i could find is that there was missing values in the prepossessing. Another possibility is the number of folds used (K) which will affect the results. I then ran a test to get the variance which was 0.0003822415. This results indicate that there is a very low variability with regards to to the accuracy obtained in the cross validation process. The positive outcome in my results means that the model is not heavily influenced by the training and validation subsets.
+
+I then did a cross validation with regards to the logistic regression. I however also obtained a negative bias value of -67.34309 this suggests that once again this model performs worse that the normal logistics regression. This once again suggests that there may be issues with the cross performance validation.
+
+# logistic Regression ROC Curve 
+
+The ROC curve show the trade-off between the true positive rate and the false positive rate at different thresholds. For some reason I wasn't able to print the the curve. I was able to calculate the area under the curve in my code it is print(roc_obj) which is 0.7541. What this mean is that my model has some level of discriminatory power. It performs better than a random classifier however it may have room for improvement to achieve a higher accuracy rate.
+
+# Bias variance trade off 
+
+# Prediction 
+
+The next thing that did was create a function to predict the probability of each of of the group stages matches the results are as followers :
+
+\_\_\_Starting group F:\_\_\_
+
+Morocco vs. Croatia: Croatia wins with 0.60
+
+Morocco vs. Belgium: Belgium wins with 0.66
+
+Morocco vs. Canada: Morocco wins with 0.55
+
+Croatia vs. Belgium: Belgium wins with 0.61
+
+Croatia vs. Canada: Croatia wins with 0.60
+
+Belgium vs. Canada: Belgium wins with 0.65
+
+\_\_\_Starting group C:\_\_\_
+
+Argentina vs. Saudi Arabia: Argentina wins with 0.69
+
+Argentina vs. Mexico: Draw
+
+Argentina vs. Poland: Argentina wins with 0.57
+
+Saudi Arabia vs. Mexico: Mexico wins with 0.73
+
+Saudi Arabia vs. Poland: Poland wins with 0.67
+
+Mexico vs. Poland: Draw
+
+\_\_\_Starting group A:\_\_\_
+
+Senegal vs. Qatar: Senegal wins with 0.62
+
+Senegal vs. Netherlands: Netherlands wins with 0.61
+
+Senegal vs. Ecuador: Senegal wins with 0.59
+
+Qatar vs. Netherlands: Netherlands wins with 0.74
+
+Qatar vs. Ecuador: Ecuador wins with 0.57
+
+Netherlands vs. Ecuador: Netherlands wins with 0.64
+
+\_\_\_Starting group E:\_\_\_
+
+Germany vs. Japan: Draw
+
+Germany vs. Spain: Spain wins with 0.58
+
+Germany vs. Costa Rica: Germany wins with 0.55
+
+Japan vs. Spain: Spain wins with 0.64
+
+Japan vs. Costa Rica: Draw
+
+Spain vs. Costa Rica: Spain wins with 0.58
+
+\_\_\_Starting group H:\_\_\_
+
+Uruguay vs. South Korea: Draw
+
+Uruguay vs. Portugal: Portugal wins with 0.58
+
+Uruguay vs. Ghana: Uruguay wins with 0.69
+
+South Korea vs. Portugal: Portugal wins with 0.65
+
+South Korea vs. Ghana: South Korea wins with 0.62
+
+Portugal vs. Ghana: Portugal wins with 0.71
+
+\_\_\_Starting group B:\_\_\_
+
+Iran vs. England: England wins with 0.63
+
+Iran vs. USA: USA wins with 0.57
+
+Iran vs. Wales: Wales wins with 0.56
+
+England vs. USA: Draw
+
+England vs. Wales: Draw
+
+USA vs. Wales: Draw
+
+\_\_\_Starting group G:\_\_\_
+
+Switzerland vs. Cameroon: Switzerland wins with 0.60
+
+Switzerland vs. Brazil: Brazil wins with 0.63
+
+Switzerland vs. Serbia: Draw
+
+Cameroon vs. Brazil: Brazil wins with 0.75
+
+Cameroon vs. Serbia: Serbia wins with 0.65
+
+Brazil vs. Serbia: Brazil wins with 0.56
+
+\_\_\_Starting group D:\_\_\_
+
+Denmark vs. Tunisia: Denmark wins with 0.55
+
+Denmark vs. France: France wins with 0.59
+
+Denmark vs. Australia: Denmark wins with 0.60
+
+Tunisia vs. France: France wins with 0.68
+
+Tunisia vs. Australia: Draw
+
+France vs. Australia: France wins with 0.63
+
+From these results we can see that some of these results actually happened, however a clear noticeable difference is that during the Saudi Arabia vs Argentina game my results predict that Argentina will win with a probability of 0.70 however we know that this in fact that didn't happened. However it should be noted that predict sports games is rather difficult due to the fact that there are always major upsets in competitions however given that my model did give an accuracy of 68.02% one can conclude that there may be some discrepancies in the predictions.
+
+Given these results i then created a function that will calculated the expected points given the probability of each of the teams results. This was done so that i was able to see the survival of each of the countries that will continue out of the world cup. The graph below show the probability of each of the teams
+
+```{r Figure7,  warning =  FALSE, fig.align = 'center', fig.cap = "Probability of survival     \\label{Figure7}", fig.ext = 'png', fig.height = 7, fig.width = 6}
+
+data <- list(
+    c('Netherlands', 0.7207123136586894),
+    c('Belgium', 0.7041053684174787),
+    c('Portugal', 0.7025008859381351),
+    c('France', 0.6893043301262857),
+    c('Brazil', 0.6878946534259283),
+    c('Spain', 0.6419635779920858),
+    c('Argentina', 0.6086463678095058),
+    c('Mexico', 0.5868558522665447),
+    c('England', 0.5691708021782123),
+    c('Serbia', 0.5383228703970194),
+    c('Wales', 0.5323556070273117),
+    c('Uruguay', 0.5313857116348),
+    c('Senegal', 0.5238123555510896),
+    c('Croatia', 0.5217642297484982),
+    c('Denmark', 0.5151762204409138),
+    c('Poland', 0.5128567082594242),
+    c('USA', 0.5126970678459446),
+    c('Germany', 0.4893859548936812),
+    c('Switzerland', 0.45510860867744996),
+    c('South Korea', 0.45081127452719727),
+    c('Costa Rica', 0.43841533837914887),
+    c('Japan', 0.4109739077103775),
+    c('Ecuador', 0.4107822279220528),
+    c('Australia', 0.3877831877546305),
+    c('Morocco', 0.3819955705681707),
+    c('Tunisia', 0.3721040502951258),
+    c('Iran', 0.36831897628115345),
+    c('Canada', 0.3482241700140098),
+    c('Qatar', 0.28657994414763255),
+    c('Cameroon', 0.25700333565836253),
+    c('Ghana', 0.24790543284071997),
+    c('Saudi Arabia', 0.22215428639701668)
+)
+
+# Extract country names and probabilities
+countries <- sapply(data, "[[", 1)
+probabilities <- as.numeric(sapply(data, "[[", 2))
+
+# Create a bar plot
+barplot(probabilities, names.arg = countries, ylab = "Probability", col = rainbow(length(data)), las = 2, cex.names = 0.8, ylim = c(0, max(probabilities) * 1.2))
+title(main = "Probability of Countries", ylab = "Probability")
+
+```
+
+The survival of the top 16 teams are very similar to that of the teams that actually made it out the group. However one thing that my model did predict is that a top team like Germany will not make it out of the group. This in factual fact did happen during the world cup, however a surprise of the the world cup is that Morocco made it all the way to the semi-finally, however in my model it predicted that they wont even make it out of the group stages.
