@@ -392,3 +392,5 @@ title(main = "Probability of Countries", ylab = "Probability")
 ```
 
 The survival of the top 16 teams are very similar to that of the teams that actually made it out the group. However one thing that my model did predict is that a top team like Germany will not make it out of the group. This in factual fact did happen during the world cup, however a surprise of the the world cup is that Morocco made it all the way to the semi-finally, however in my model it predicted that they wont even make it out of the group stages.
+
+# Conclusion

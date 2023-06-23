@@ -4,10 +4,196 @@ output: html_document
 date: "2023-05-26"
 ---
 
-# The purpose of this project is to try and predict who should have won the 2022 FIFA world cup based on historical data
+# The purpose of this project is to try and and see the survival of which of the 32 teams will make it out of the round of 16. 
+
+
+Training the data 
+```{r}
+X <- match_df[, c('average_rank', 'rank_difference', 'point_difference', 'is_stake', 'is_worldcup')]
+y <- match_df$is_won
+
+# Splitting the data into train and test sets
+set.seed(42)  # Setting the random seed for reproducibility
+train_indices <- caret::createDataPartition(y, p = 0.8, list = FALSE)
+X_train <- X[train_indices, ]
+X_test <- X[-train_indices, ]
+y_train <- y[train_indices]
+y_test <- y[-train_indices]
+
+```
+
+Machine learning models 
 
 ```{r}
+# Logistic Regression
+logreg <- glm(y_train ~ ., family = binomial(), data = cbind(X_train, y_train))
+lg_pred <- predict(logreg, newdata = X_test, type = "response") > 0.5
+acc_log <- round(mean(lg_pred == y_test) * 100, 2)
+acc_log
 
-in title {r include=false}
-source("code/ what ever script is called.R")
+
+
+# Support Vector Machines
+y_train <- as.factor(y_train)  # Convert y_train to a factor
+
+svm_model <- svm(y_train ~ ., data = cbind(X_train, y_train))
+svm_pred <- predict(svm_model, newdata = X_test)
+acc_svc <- round(mean(svm_pred == y_test) * 100, 2)
+acc_svc
+
+
+# K-Nearest Neighbors
+knn_model <- knn(train = X_train, test = X_test, cl = y_train, k = 3)
+acc_knn <- round(mean(knn_model == y_test) * 100, 2)
+acc_knn
+
+# Gaussian Naive Bayes
+gnb_model <- naiveBayes(X_train, y_train)
+gnb_pred <- predict(gnb_model, newdata = X_test)
+acc_gaussian <- round(mean(gnb_pred == y_test) * 100, 2)
+acc_gaussian
+
+# Decision Tree
+dt_model <- rpart(y_train ~ ., data = cbind(X_train, y_train))
+dt_pred <- predict(dt_model, newdata = X_test, type = "class")
+acc_decision_tree <- round(mean(dt_pred == y_test) * 100, 2)
+acc_decision_tree
+
+
+
+# Random Forest
+rf_model <- randomForest(y_train ~ ., data = cbind(X_train, y_train), ntree = 100)
+rf_pred <- predict(rf_model, newdata = X_test)
+acc_random_forest <- round(mean(rf_pred == y_test) * 100, 2)
+acc_random_forest
 ```
+
+
+
+
+
+Group Stage prediction 
+```{r}
+
+for (group in unique(Q2022TG$Group)) {
+    cat(paste('___Starting group', group, ':___\n', sep=''))
+
+    group_teams <- Q2022TG$Team[Q2022TG$Group == group]
+
+    # Check if there are at least two non-NA values in group_teams
+    if (length(na.omit(group_teams)) < 2) {
+        cat("Insufficient teams in the group.\n")
+        next
+    }
+
+    team_combinations <- combn(group_teams, 2)
+
+    for (i in 1:ncol(team_combinations)) {
+        home <- team_combinations[1, i]
+        away <- team_combinations[2, i]
+        cat(paste(home, 'vs.', away, ': ', sep=''))
+
+        home_rank <- worldcup_rankings[match(home, worldcup_rankings$country_full), 'rank']
+        home_points <- worldcup_rankings[match(home, worldcup_rankings$country_full), 'total_points']
+        opp_rank <- worldcup_rankings[match(away, worldcup_rankings$country_full), 'rank']
+        opp_points <- worldcup_rankings[match(away, worldcup_rankings$country_full), 'total_points']
+
+        world_cup[match(home, world_cup$Team), 'rank'] <- home_rank
+        world_cup[match(away, world_cup$Team), 'rank'] <- opp_rank
+
+        average_rank <- (home_rank + opp_rank) / 2
+        rank_difference <- home_rank - opp_rank
+        point_difference <- home_points - opp_points
+
+        # Convert average_rank, rank_difference, and point_difference to numeric
+        average_rank <- as.numeric(average_rank)
+        rank_difference <- as.numeric(rank_difference)
+        point_difference <- as.numeric(point_difference)
+
+        # Create a data frame for each match
+        row <- data.frame(average_rank = average_rank, rank_difference = rank_difference, point_difference = point_difference)
+
+        # Model Output
+        home_win_prob <- predict(model, row)[, 2]
+
+        # Saving Model Output
+        world_cup[match(home, world_cup$Team), 'total_prob'] <- world_cup[match(home, world_cup$Team), 'total_prob'] + home_win_prob
+        world_cup[match(away, world_cup$Team), 'total_prob'] <- world_cup[match(away, world_cup$Team), 'total_prob'] + 1 - home_win_prob
+
+        country_win_prob[[home]] <- c(country_win_prob[[home]], home_win_prob)
+        country_win_prob[[away]] <- c(country_win_prob[[away]], 1 - home_win_prob)
+
+        # Determining Win / Draw / Lose based on home_win_prob
+        points <- 0
+        if (home_win_prob <= 0.5 - margin) {
+            cat(paste(away, 'wins with', format(1 - home_win_prob, digits=2)), '\n')
+            world_cup[match(away, world_cup$Team), 'points'] <- world_cup[match(away, world_cup$Team), 'points'] + 3
+            world_cup[match(away, world_cup$Team), 'expected_points'] <- world_cup[match(away, world_cup$Team), 'expected_points'] + (1 - home_win_prob) * 3
+        } else if (home_win_prob > 0.5 - margin && home_win_prob < 0.5 + margin) {
+            cat('Draw\n')
+            world_cup[match(home, world_cup$Team), 'points'] <- world_cup[match(home, world_cup$Team), 'points'] + 1
+            world_cup[match(away, world_cup$Team), 'points'] <- world_cup[match(away, world_cup$Team), 'points'] + 1
+            world_cup[match(home, world_cup$Team), 'expected_points'] <- world_cup[match(home, world_cup$Team), 'expected_points'] + home_win_prob * 1
+            world_cup[match(away, world_cup$Team), 'expected_points'] <- world_cup[match(away, world_cup$Team), 'expected_points'] + (1 - home_win_prob) * 1
+        } else {
+            cat(paste(home, 'wins with', format(home_win_prob, digits=2)), '\n')
+            world_cup[match(home, world_cup$Team), 'points'] <- world_cup[match(home, world_cup$Team), 'points'] + 3
+            world_cup[match(home, world_cup$Team), 'expected_points'] <- world_cup[match(home, world_cup$Team), 'expected_points'] + home_win_prob * 3
+        }
+    }
+}
+
+```
+
+
+expected points 
+```{r}
+unique_groups <- unique(Q2022TG$Group)
+for (group in unique_groups) {
+    cat(paste('___Starting group', group, '___\n'))
+    teams <- Q2022TG[Q2022TG$Group == group, ]
+    for (i in 1:nrow(teams)) {
+        team_name <- teams[i, 1]
+        expected_points <- world_cup[team_name, "expected points"]
+        cat(paste(team_name, ": ", expected_points, "\n"))
+    }
+}
+
+```
+
+Survival probability 
+
+```{r}
+country_total_prob <- list()
+
+for (country in names(country_win_prob)) {
+    win_prob_list <- country_win_prob[[country]]
+
+    total_prob <- 0
+    temp <- 1
+    for (i in 1:3) {
+        temp <- temp * win_prob_list[i]
+    }
+    total_prob <- total_prob + temp
+
+    for (i in 1:3) {
+        temp <- 1
+        for (j in 1:3) {
+            if (i == j) {
+                temp <- temp * (1 - win_prob_list[i])
+            } else {
+                temp <- temp * win_prob_list[i]
+            }
+        }
+        total_prob <- total_prob + temp
+    }
+
+    country_total_prob[[country]] <- total_prob
+
+    cat(paste(country, ":", total_prob, "\n"))
+}
+
+
+country_total_prob <- sort(country_total_prob, decreasing = TRUE, key = function(x) x[[2]])
+```
+
